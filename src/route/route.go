@@ -22,7 +22,10 @@ func RoutingShot(router *gin.Engine, db *gorm.DB) {
 	shotGroup := router.Group("/shot")
 	{
 		shotGroup.Use(middleware.JwtAuthMiddleware())
-
+		// get tous les shots
+		
+		
 		shotGroup.POST("/add_shot", shot.AddShotController)
+		shotGroup.GET("/", shot.GetAllShotsController)
 	}
 }

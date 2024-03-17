@@ -7,31 +7,32 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-	// "github.com/google/uuid"
 )
 
-// AddShotService ajoute un nouveau shot à la base de données
 func AddShotService(newShot *entity.Shot, db *gorm.DB) (*entity.Shot, error) {
-	// Générez un identifiant UUID pour le nouveau shot
-	// newUUID := uuid.New()
 
-	// Créez un nouvel enregistrement de shot avec les données fournies
 	shot := &entity.Shot{
-		ID:           newShot.ID,
-		Name:         newShot.Name,
-		Percentage:   newShot.Percentage,
+		ID:          newShot.ID,
+		Name:        newShot.Name,
+		Percentage:  newShot.Percentage,
 		AlreadyTake: newShot.AlreadyTake,
-		// AlreadyTaken: newShot.AlreadyTaken,
-		Price:     newShot.Price,
-		Points:    newShot.Points,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		Price:       newShot.Price,
+		Points:      newShot.Points,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
-	// Ajoutez le nouveau shot à la base de données
 	if err := db.Create(shot).Error; err != nil {
 		return nil, err
 	}
 
 	return shot, nil
+}
+
+func GetAllShotsService(db *gorm.DB) ([]entity.Shot, error) {
+	var shots []entity.Shot
+	if err := db.Find(&shots).Error; err != nil {
+		return nil, err
+	}
+	return shots, nil
 }
