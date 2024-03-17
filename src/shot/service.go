@@ -20,7 +20,7 @@ func AddShotService(newShot *entity.Shot, db *gorm.DB) (*entity.Shot, error) {
 		ID:           newShot.ID,
 		Name:         newShot.Name,
 		Percentage:   newShot.Percentage,
-		AlreadyTaken: newShot.AlreadyTaken,
+		AlreadyTake: newShot.AlreadyTake,
 		// AlreadyTaken: newShot.AlreadyTaken,
 		Price:     newShot.Price,
 		Points:    newShot.Points,

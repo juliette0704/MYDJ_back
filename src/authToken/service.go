@@ -22,7 +22,6 @@ func GenerateToken(userID uint64) (string, error) {
 	if err != nil {
 		return "", err
 	}
-    tokenString = "Bearer " + tokenString
 
     log.Println("token login = ",tokenString)
 	return tokenString, nil
