@@ -6,12 +6,10 @@ import (
 	"regexp"
 
 	"mydj_server/config"
+	authToken "mydj_server/src/authToken"
 	"mydj_server/src/entity"
 	"mydj_server/src/inputs"
 	"mydj_server/src/response"
-	authToken "mydj_server/src/authToken"
-
-	// "mydj_server/src/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -21,7 +19,7 @@ func GetIDFromUUID(uuid uuid.UUID) (uint, error) {
 	var err error
 	var users []entity.User
 
-	db, err := config.ReturnDB()
+	db, _ := config.ReturnDB()
 	err = db.Where("uuid = ?", uuid).Find(&users).Error
 	if len(users) == 0 {
 		log.Println("Error", err.Error())
@@ -45,14 +43,12 @@ func UserLoginController(c *gin.Context) {
 		return
 	}
 
-	// Vérifie les informations d'identification de l'utilisateur et récupère son UUID s'il est trouvé
 	uuid, find, err := UserLoginService(credential.Email, credential.Password)
 	if err != nil {
 		response.RespondWithError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	// Si l'utilisateur est trouvé, génère un token JWT et renvoie une réponse avec le token
 	if find {
 		token, err := authToken.GenerateToken(uint64(uuid.ID()))
 		if err != nil {
@@ -60,12 +56,10 @@ func UserLoginController(c *gin.Context) {
 			return
 		}
 
-		// Ajoute le token JWT à la réponse
 		response.RespondWithSuccess(c, "connected", gin.H{"token": token})
 		return
 	}
 
-	// Si l'utilisateur n'est pas trouvé, renvoie une réponse NotFound
 	response.RespondWithNotFound(c)
 }
 
@@ -83,7 +77,7 @@ func IsValidPassword(password string) bool {
 
 func RegisterController(c *gin.Context) {
 	var err error
-	db, err := config.ReturnDB()
+	db, _ := config.ReturnDB()
 	var input inputs.UserInitInput
 	if err = c.ShouldBindJSON(&input); err != nil {
 		response.RespondWithError(c, 400, err)
