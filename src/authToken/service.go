@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"mydj_server/config"
+	"mydj_server/src/entity"
 	"strconv"
 	"time"
 
@@ -23,7 +24,7 @@ func GenerateToken(userID uint64) (string, error) {
 		return "", err
 	}
 
-    log.Println("token login = ",tokenString)
+	log.Println("token login = ", tokenString)
 	return tokenString, nil
 }
 
@@ -39,11 +40,9 @@ func ValidateToken(tokenString string) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	// Vérifie si le token est valide
 	if !token.Valid {
 		return 0, jwt.ErrSignatureInvalid
 	}
-	// Extrait l'ID de l'utilisateur à partir du token
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return 0, jwt.ErrInvalidKey
@@ -52,7 +51,6 @@ func ValidateToken(tokenString string) (uint64, error) {
 	if !ok {
 		return 0, jwt.ErrInvalidKey
 	}
-	// Convertit l'ID de l'utilisateur dans le type approprié (ici, uint64)
 	switch userID := userID.(type) {
 	case float64:
 		return uint64(userID), nil
@@ -67,4 +65,16 @@ func ValidateToken(tokenString string) (uint64, error) {
 	}
 }
 
-// Vous n'avez plus besoin de ces fonctions si vous n'utilisez pas de base de données
+func GetUserByID(userID uint64) (*entity.User, error) {
+	var user entity.User
+	db, err := config.ReturnDB()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.First(&user, userID).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

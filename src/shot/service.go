@@ -3,6 +3,7 @@
 package shot
 
 import (
+	"errors"
 	"mydj_server/src/entity"
 	"time"
 
@@ -10,7 +11,10 @@ import (
 )
 
 func AddShotService(newShot *entity.Shot, db *gorm.DB) (*entity.Shot, error) {
-
+	var existingShot entity.Shot
+	if err := db.Where("name = ?", newShot.Name).First(&existingShot).Error; err == nil {
+		return nil, errors.New("shot with the same name already exists")
+	}
 	shot := &entity.Shot{
 		ID:          newShot.ID,
 		Name:        newShot.Name,

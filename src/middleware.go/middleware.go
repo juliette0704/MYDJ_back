@@ -17,14 +17,12 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Vérifie si le token commence par "Bearer "
 		if !strings.HasPrefix(tokenString, "Bearer ") {
 			c.String(http.StatusUnauthorized, "Format de token invalide")
 			c.Abort()
 			return
 		}
 
-		// Supprime le préfixe "Bearer " du token
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
 		userID, err := authtoken.ValidateToken(tokenString)
